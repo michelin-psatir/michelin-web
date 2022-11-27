@@ -42,9 +42,6 @@ module.exports = {
         // '../../**/*.py'
     ],
     theme: {
-        fontFamily: {
-            'sans': ['Helvetica', 'Arial', 'sans-serif'],
-        },
         extend: {},
     },
     plugins: [
