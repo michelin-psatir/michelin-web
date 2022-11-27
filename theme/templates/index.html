@@ -1,0 +1,45 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <title>Django Tailwind</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		{% tailwind_css %}
+	</head>
+
+	<body class="leading-normal tracking-normal font-sans">
+		<div class="md:container md:mx-auto p-24">
+
+            <div class="overflow-x-auto relative">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
+                        <tr>
+                            <th scope="col" class="py-3 px-6">
+                                Film
+                            </th>
+                            <th scope="col" class="py-3 px-6">
+                                Film Title
+                            </th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for res in result %}
+                        <tr class="bg-white border-b">
+                            <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap">
+                                {{ res.film.value }}
+                            </th>
+                            <td class="py-4 px-6">
+                                {{ res.filmTitle.value }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+			
+		</div>
+	</body>
+</html>

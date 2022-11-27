@@ -6,9 +6,11 @@ from .forms import *
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-
-def base(request):
-    return render(request, 'base.html')
+def set_namespace():
+    namespace = "test"
+    sparql = SPARQLWrapper("http://localhost:9999/blazegraph/namespace/"+ namespace + "/sparql")
+    sparql.setReturnFormat(JSON)
+    return sparql
 
 def test_dev1(request):
     sparql = SPARQLWrapper(
@@ -96,8 +98,8 @@ def test_dev3(request):
     """)
 
     try:
-        # ret = sparql.queryAndConvert()
-        data = sparql.query()
+        data = sparql.queryAndConvert()["results"]["bindings"]
+        # data = sparql.query()
 
         # for r in ret["results"]["bindings"]:
         #     print(r)
@@ -105,4 +107,51 @@ def test_dev3(request):
         print(e)
         data = None
 
-    return HttpResponse(data, content_type="application/json")
+    return render(request, 'index.html', {'result': data})
+
+def search(request):
+    
+    form = SearchForm()
+
+    return render(request, 'base.html', {'form': form})
+
+def test_dev4(request):
+    form = SearchForm(request.POST or None)
+    sparql = set_namespace()
+
+    data = None
+
+    if (form.is_valid() and request.method == 'POST'):
+        search = form.cleaned_data['search']
+        if search != '':
+            query = """
+                PREFIX :     <http://example.org/data/> 
+                PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+                PREFIX v:    <http://example.org/vocab#> 
+                PREFIX bds: <http://www.bigdata.com/rdf/search#>
+
+                SELECT DISTINCT ?film ?filmTitle WHERE {
+                    ?filmTitle bds:search """
+            query += '"' + search + '" .'
+            query += """
+                    ?film rdf:type v:Film ;
+                        v:title ?filmTitle .
+
+                    }
+            """
+            
+            try:
+                # print(query)
+                sparql.setQuery(query)
+                data = sparql.queryAndConvert()["results"]["bindings"]
+                # print(data)
+            except Exception as e:
+                print(e)
+                data = None
+
+            return render(request, 'index.html', {'result': data})
+    
+    else:
+        form = SearchForm()
+
+    return render(request, 'base.html', {'result': data, 'form': form})
