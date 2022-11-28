@@ -123,23 +123,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, '/')
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
-
-# This is the directory for storing `collectstatic` results.
-# This shouldn't be included in your Git repository.
-# STATIC_ROOT = os.path.join(SITE_ROOT, 'assets')
-
-# You can use this directory to store project-wide static files.
-# STATICFILES_DIRS = [ os.path.join(BASE_DIR,'static') ]
-
-# Enable compression and caching features of whitenoise.
-# You can remove this if it causes problems on your setup.
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -152,4 +135,4 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+NPM_BIN_PATH = r"/usr/bin/node"
