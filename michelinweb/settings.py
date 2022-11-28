@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from django.conf import settings
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -123,12 +124,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+#STATIC_ROOT = (os.path.join(SITE_ROOT, 'static_files/'))
+SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
+
+STATICFILES_DIRS = (
+  os.path.join(SITE_ROOT, 'static/'),
+)
+
 # This is the directory for storing `collectstatic` results.
 # This shouldn't be included in your Git repository.
-STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 # You can use this directory to store project-wide static files.
-STATICFILES_DIRS = [ os.path.join(BASE_DIR,'static') ]
+# STATICFILES_DIRS = [ os.path.join(BASE_DIR,'static') ]
 
 # Enable compression and caching features of whitenoise.
 # You can remove this if it causes problems on your setup.
