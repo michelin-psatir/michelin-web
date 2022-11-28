@@ -7,10 +7,20 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		{% tailwind_css %}
+
 	</head>
 
 	<body class="leading-normal tracking-normal font-sans">
-		<div class="md:container md:mx-auto p-24">
+		<div class="md:container md:mx-auto p-8">
+
+            <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow inline-flex items-center" onclick="location.href = '/';">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 pr-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+                </svg>                  
+                <span>Go Back</span>
+            </button>
+
+            <h1 class="p-4 text-2xl text-blue-600 font-bold">Search Result</h1> 
 
             <div class="overflow-x-auto relative">
                 <table class="w-full text-sm text-left text-gray-500">
@@ -27,11 +37,11 @@
                     </thead>
                     <tbody>
                         {% for res in result %}
-                        <tr class="bg-white border-b">
+                        <tr class="bg-white border-b" id="{{ res.film.value }}">
                             <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap">
                                 {{ res.film.value }}
                             </th>
-                            <td class="py-4 px-6">
+                            <td class="py-4 px-6 whitespace-nowrap">
                                 {{ res.filmTitle.value }}
                             </td>
                         </tr>
@@ -39,7 +49,7 @@
                     </tbody>
                 </table>
             </div>
-			
+
 		</div>
 	</body>
 </html>
