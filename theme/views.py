@@ -6,8 +6,8 @@ from .forms import *
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-def set_namespace():
-    namespace = "test"
+def set_namespace(name):
+    namespace = name
     sparql = SPARQLWrapper("http://localhost:9999/blazegraph/namespace/"+ namespace + "/sparql")
     sparql.setReturnFormat(JSON)
     return sparql
@@ -46,9 +46,7 @@ def test_dev1(request):
     return HttpResponse(data, content_type="application/json")
 
 def test_dev2(request):
-    namespace = "test"
-    sparql = SPARQLWrapper("http://localhost:9999/blazegraph/namespace/"+ namespace + "/sparql")
-    sparql.setReturnFormat(JSON)
+    sparql = set_namespace("test")
 
     sparql.setQuery("""
         PREFIX :     <http://example.org/data/> 
@@ -78,9 +76,7 @@ def test_dev2(request):
     return HttpResponse(data, content_type="application/json")
 
 def test_dev3(request):
-    namespace = "test"
-    sparql = SPARQLWrapper("http://localhost:9999/blazegraph/namespace/"+ namespace + "/sparql")
-    sparql.setReturnFormat(JSON)
+    sparql = set_namespace("test")
 
     sparql.setQuery("""
         PREFIX :     <http://example.org/data/> 
@@ -117,7 +113,7 @@ def search(request):
 
 def test_dev4(request):
     form = SearchForm(request.POST or None)
-    sparql = set_namespace()
+    sparql = set_namespace("test")
 
     data = None
 
@@ -136,6 +132,49 @@ def test_dev4(request):
             query += """
                     ?film rdf:type v:Film ;
                         v:title ?filmTitle .
+
+                    }
+            """
+            
+            try:
+                # print(query)
+                sparql.setQuery(query)
+                data = sparql.queryAndConvert()["results"]["bindings"]
+                # print(data)
+            except Exception as e:
+                print(e)
+                data = None
+
+            return render(request, 'index.html', {'result': data})
+    
+    else:
+        form = SearchForm()
+
+    return render(request, 'base.html', {'result': data, 'form': form})
+
+def test_dev5(request):
+    form = SearchForm(request.POST or None)
+    sparql = set_namespace("michelin-prelim-v1")
+
+    data = None
+
+    if (form.is_valid() and request.method == 'POST'):
+        search = form.cleaned_data['search']
+        if search != '':
+            query = """
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+                PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+                PREFIX v: <http://www.example.org/> 
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+                PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+                PREFIX bds: <http://www.bigdata.com/rdf/search#>
+
+                SELECT DISTINCT ?res ?restaurantName WHERE {
+                    ?restaurantName bds:search """
+            query += '"*' + search + '*" .'
+            query += """
+                    ?res a v:name ;
+                        rdfs:label ?restaurantName .
 
                     }
             """

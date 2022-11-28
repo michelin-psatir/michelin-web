@@ -27,10 +27,10 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
                         <tr>
                             <th scope="col" class="py-3 px-6">
-                                Film
+                                Restaurant
                             </th>
                             <th scope="col" class="py-3 px-6">
-                                Film Title
+                                Restaurant Name
                             </th>
                             
                         </tr>
@@ -39,10 +39,10 @@
                         {% for res in result %}
                         <tr class="bg-white border-b" id="{{ res.film.value }}">
                             <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap">
-                                {{ res.film.value }}
+                                {{ res.res.value }}
                             </th>
                             <td class="py-4 px-6 whitespace-nowrap">
-                                {{ res.filmTitle.value }}
+                                {{ res.restaurantName.value }}
                             </td>
                         </tr>
                         {% endfor %}
