@@ -1,1 +1,1 @@
-web: python manage.py migrate && python manage.py collectstatic --no-input && gunicorn michelinweb.wsgi
+web: python manage.py tailwind install && python manage.py tailwind start && python manage.py migrate && python manage.py collectstatic --no-input && gunicorn michelinweb.wsgi
