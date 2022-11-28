@@ -188,9 +188,10 @@ def test_dev5(request):
                 print(e)
                 data = None
 
-            return render(request, 'index.html', {'result': data})
+            form = SearchForm() 
+            return render(request, 'index.html', {'result': data, 'form': form, 'search': search})
     
     else:
         form = SearchForm()
-
-    return render(request, 'base.html', {'result': data, 'form': form})
+        
+    return render(request, 'base.html', {'result': data, 'form': form, 'search': search})
