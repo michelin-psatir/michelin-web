@@ -133,7 +133,7 @@ STATICFILES_DIRS = (
 
 # This is the directory for storing `collectstatic` results.
 # This shouldn't be included in your Git repository.
-# STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+STATIC_ROOT = os.path.join(SITE_ROOT, 'assets')
 
 # You can use this directory to store project-wide static files.
 # STATICFILES_DIRS = [ os.path.join(BASE_DIR,'static') ]
