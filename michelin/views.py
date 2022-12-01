@@ -6,6 +6,8 @@ from .forms import *
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
+NAMESPACE = "michelin-final"
+
 def set_namespace(name):
     namespace = name
     sparql = SPARQLWrapper("http://localhost:9999/blazegraph/namespace/"+ namespace + "/sparql")
@@ -19,9 +21,15 @@ def search(request):
 
     return render(request, 'base.html', {'form': form})
 
+def error404(request):
+    
+    form = SearchForm()
+
+    return render(request, '404error.html', {'form': form})
+
 def query(request):
     form = SearchForm(request.POST or None)
-    sparql = set_namespace("michelin-prelim-v1")
+    sparql = set_namespace(NAMESPACE)
 
     data = None
 
@@ -63,4 +71,53 @@ def query(request):
     else:
         form = SearchForm()
         
-    return render(request, 'base.html', {'result': data, 'form': form, 'search': search})
+    return render(request, '404error.html', {'form': form,})
+
+def fetch_details(request, id):
+    sparql = set_namespace(NAMESPACE)
+    form = SearchForm()
+    object_id = id
+    data_local = None
+    data_remote = None
+
+    if object_id != '':
+
+        # Query for Local Data
+
+        query = """
+            Lorem Ipsum
+            """
+        query += '"*' + object_id + '*" .'
+        query += """
+            Lorem Ipsum
+        """
+        
+        try:
+            # print(query)
+            sparql.setQuery(query)
+            data_local = sparql.queryAndConvert()["results"]["bindings"]
+        except Exception as e:
+            print(e)
+            data_local = None
+
+        # Query for Remote Data
+
+        query = """
+            Lorem Ipsum
+            """
+        query += '"*' + object_id + '*" .'
+        query += """
+            Lorem Ipsum
+        """
+        
+        try:
+            # print(query)
+            sparql.setQuery(query)
+            data_remote = sparql.queryAndConvert()["results"]["bindings"]
+        except Exception as e:
+            print(e)
+            data_remote = None
+
+        return render(request, 'detail.html', {'resultLocal': data_local, 'resultRemote': data_remote, 'form': form,})
+
+    return search(request)
