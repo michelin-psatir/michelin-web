@@ -36,12 +36,15 @@ def query(request):
                 PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
                 PREFIX bds: <http://www.bigdata.com/rdf/search#>
 
-                SELECT DISTINCT ?res ?restaurantName WHERE {
+                SELECT DISTINCT ?restaurantName ?stars ?city ?year WHERE {
                     ?restaurantName bds:search """
             query += '"*' + search + '*" .'
             query += """
                     ?res a v:name ;
-                        rdfs:label ?restaurantName .
+                        rdfs:label ?restaurantName ;
+                        v:stars ?stars ;
+                        v:city [ rdfs:label ?city ] ;
+                        v:year ?year .
 
                     }
             """

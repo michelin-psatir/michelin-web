@@ -136,3 +136,5 @@ INTERNAL_IPS = [
 ]
 
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+# Uncomment below for deployment or Linux-based development
+# NPM_BIN_PATH = r"/usr/bin/npm"
