@@ -25,6 +25,11 @@
                     y.style.display = "none";
                 }
             }
+
+            function fetchData(clicked_id)
+            {
+                alert(clicked_id);
+            }
         </script>
 
 	</head>
@@ -72,7 +77,7 @@
 
             <div id="cardview" style="display: block;">
                 {% for res in result %}
-                <div class="py-4">
+                <div class="py-4" id="{{ res.restaurantID.value }}" onclick=fetchData(this.id)>
                     <div class="flex w-full flex-col p-4 rounded-lg shadow drop-shadow-md bg-white hover:bg-gray-100 hover:cursor-pointer border border-solid border-gray-200">
                         
                         <div class="flex flex-row">
@@ -104,7 +109,7 @@
                                 City
                             </th>
                             <th scope="col" class="py-3 px-6">
-                                Stars
+                                Michelin Stars
                             </th>
                             <th scope="col" class="py-3 px-6">
                                 Year
@@ -113,7 +118,7 @@
                     </thead>
                     <tbody>
                         {% for res in result %}
-                        <tr class="bg-white border-b hover:bg-gray-100 hover:cursor-pointer" id="{{ res.film.value }}">
+                        <tr class="bg-white border-b hover:bg-gray-100 hover:cursor-pointer" id="{{ res.restaurantID.value }}" onclick=fetchData(this.id)>
                             <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap">
                                 {{ res.restaurantName.value }}
                             </th>

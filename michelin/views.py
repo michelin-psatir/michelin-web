@@ -36,7 +36,7 @@ def query(request):
                 PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
                 PREFIX bds: <http://www.bigdata.com/rdf/search#>
 
-                SELECT DISTINCT ?restaurantName ?stars ?city ?year WHERE {
+                SELECT DISTINCT (?res AS ?restaurantID) ?restaurantName ?stars ?city ?year WHERE {
                     ?restaurantName bds:search """
             query += '"*' + search + '*" .'
             query += """
@@ -53,7 +53,6 @@ def query(request):
                 # print(query)
                 sparql.setQuery(query)
                 data = sparql.queryAndConvert()["results"]["bindings"]
-                # print(data)
             except Exception as e:
                 print(e)
                 data = None
