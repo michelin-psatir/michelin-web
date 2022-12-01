@@ -759,14 +759,6 @@ select {
   margin-right: auto;
 }
 
-.mb-\[200px\] {
-  margin-bottom: 200px;
-}
-
-.mb-\[2000px\] {
-  margin-bottom: 2000px;
-}
-
 .block {
   display: block;
 }
