@@ -7,6 +7,7 @@ from .forms import *
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 NAMESPACE = "michelin-final"
+URI = "http://www.example.org/"
 
 def set_namespace(name):
     namespace = name
@@ -37,11 +38,11 @@ def query(request):
         search = form.cleaned_data['search']
         if search != '':
             query = """
-                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-                PREFIX owl: <http://www.w3.org/2002/07/owl#> 
-                PREFIX v: <http://www.example.org/> 
-                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
-                PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+                PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+                PREFIX  owl: <http://www.w3.org/2002/07/owl#> 
+                PREFIX  v: <http://www.example.org/vocab/> 
+                PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+                PREFIX  foaf: <http://xmlns.com/foaf/0.1/> 
                 PREFIX bds: <http://www.bigdata.com/rdf/search#>
 
                 SELECT DISTINCT (?res AS ?restaurantID) ?restaurantName ?stars ?city ?year WHERE {
@@ -66,17 +67,52 @@ def query(request):
                 data = None
 
             form = SearchForm() 
-            return render(request, 'index.html', {'result': data, 'form': form, 'search': search})
+
+            if data is not None and data is not [] and data:
+                return render(request, 'index.html', {'result': data, 'form': form, 'search': search})
+        
+        else:
+            query = """
+                PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+                PREFIX  owl: <http://www.w3.org/2002/07/owl#> 
+                PREFIX  v: <http://www.example.org/vocab/> 
+                PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+                PREFIX  foaf: <http://xmlns.com/foaf/0.1/> 
+                PREFIX bds: <http://www.bigdata.com/rdf/search#>
+
+                SELECT DISTINCT (?res AS ?restaurantID) ?restaurantName ?stars ?city ?year WHERE {
+                    ?res a v:name ;
+                        rdfs:label ?restaurantName ;
+                        v:stars ?stars ;
+                        v:city [ rdfs:label ?city ] ;
+                        v:year ?year .
+
+                    }
+            """
+            
+            try:
+                # print(query)
+                sparql.setQuery(query)
+                data = sparql.queryAndConvert()["results"]["bindings"]
+            except Exception as e:
+                print(e)
+                data = None
+
+            form = SearchForm() 
+
+            if data is not None and data is not [] and data:
+                return render(request, 'index.html', {'result': data, 'form': form, 'search': search})
+
     
     else:
         form = SearchForm()
         
-    return render(request, '404error.html', {'form': form,})
+    return error404(request)
 
 def fetch_details(request, id):
     sparql = set_namespace(NAMESPACE)
     form = SearchForm()
-    object_id = id
+    object_id = URI + id
     data_local = None
     data_remote = None
 
@@ -85,11 +121,38 @@ def fetch_details(request, id):
         # Query for Local Data
 
         query = """
-            Lorem Ipsum
-            """
-        query += '"*' + object_id + '*" .'
-        query += """
-            Lorem Ipsum
+                PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+                PREFIX  owl: <http://www.w3.org/2002/07/owl#> 
+                PREFIX  v: <http://www.example.org/vocab/> 
+                PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+                PREFIX  foaf: <http://xmlns.com/foaf/0.1/> 
+
+                SELECT ?nameURI ?name ?year ?latitude ?longitude ?city ?region ?zipCode ?cuisine ?price ?url ?stars WHERE {
+                ?nameURI a v:name;
+                            rdfs:label ?name;
+                            v:year ?year;
+                            v:latitude ?latitude;
+                            v:longitude ?longitude;
+                            v:city ?cityURI;
+                            v:cuisine ?cuisineURI;
+                            v:url ?url;
+                            v:stars ?stars;
+                            v:searchableName ?searchableName.
+                ?cityURI rdfs:label ?city;
+                        v:region ?regionURI.
+                OPTIONAL {
+                    ?nameURI v:zipCode ?zipCode.
+                }
+                OPTIONAL {
+                    ?nameURI v:price ?price.
+                }
+                ?cuisineURI rdfs:label ?cuisine.
+                ?regionURI rdfs:label ?region.
+
+                FILTER ( strstarts(str(?nameURI),"""
+        query += '"' + object_id + '"'
+        query += """) )
+                } ORDER BY ?name
         """
         
         try:
@@ -120,4 +183,4 @@ def fetch_details(request, id):
 
         return render(request, 'detail.html', {'resultLocal': data_local, 'resultRemote': data_remote, 'form': form,})
 
-    return search(request)
+    return error404(request)
