@@ -165,22 +165,79 @@ def fetch_details(request, id):
 
         # Query for Remote Data
 
-        query = """
-            Lorem Ipsum
-            """
-        query += '"*' + object_id + '*" .'
-        query += """
-            Lorem Ipsum
-        """
-        
-        try:
-            # print(query)
-            sparql.setQuery(query)
-            data_remote = sparql.queryAndConvert()["results"]["bindings"]
-        except Exception as e:
-            print(e)
-            data_remote = None
+        name = data_local[0]['name']['value']
 
-        return render(request, 'detail.html', {'resultLocal': data_local, 'resultRemote': data_remote, 'form': form,})
+        if name is not None and name and name is not '':
+            query = """
+            PREFIX wd: <http://www.wikidata.org/entity/>
+            PREFIX wds: <http://www.wikidata.org/entity/statement/>
+            PREFIX wdv: <http://www.wikidata.org/value/>
+            PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+            PREFIX wikibase: <http://wikiba.se/ontology#>
+            PREFIX p: <http://www.wikidata.org/prop/>
+            PREFIX ps: <http://www.wikidata.org/prop/statement/>
+            PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX bd: <http://www.bigdata.com/rdf#>
+            PREFIX schema: <http://schema.org/>
+            
+            
+            SELECT DISTINCT ?resto (?restoLabel AS ?name) ?tripAdvisorID (?managerLabel AS ?manager) ?yearEstablished ?streetAddress ?officialWebsite ?imageURL WHERE {
+            SERVICE <https://query.wikidata.org/sparql> {
+                SELECT DISTINCT ?resto ?restoLabel ?tripAdvisorID ?managerLabel ?yearEstablished ?streetAddress ?officialWebsite ?imageURL WHERE {
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } {
+                    SELECT DISTINCT ?resto ?restoLabel ?tripAdvisorID ?manager ?yearEstablished ?streetAddress ?officialWebsite ?imageURL WHERE {
+                    ?resto p:P166 ?michelinAward.
+                    ?michelinAward pq:P1114 ?stars;
+                                    pq:P580 ?date.
+                    BIND(YEAR(?date) AS ?year).
+            
+                    OPTIONAL {
+                        ?resto wdt:P3134 ?tripAdvisorID.
+                    }
+                    OPTIONAL {
+                        ?resto wdt:P1037 ?manager.
+                    }
+                    OPTIONAL {
+                        ?resto wdt:P571 ?timeEstablished.
+                        BIND(YEAR(?timeEstablished) AS ?yearEstablished).
+                    }
+                    OPTIONAL {
+                        ?resto wdt:P6375 ?streetAddress.
+                    }
+                    OPTIONAL {
+                        ?resto wdt:P856 ?officialWebsiteURI.
+                        BIND(STR(?officialWebsiteURI) AS ?officialWebsite)
+                    }
+                    OPTIONAL {
+                        ?resto wdt:P18 ?imageURI.
+                        BIND(STR(?imageURI) AS ?imageURL).
+                    }
+            
+                    FILTER(?year = 2019).
+                    }
+                }
+                }
+            }
+            
+            FILTER(REGEX(?restoLabel, """
+            query += '"' + name + '"'
+            query += """)).   # replace Gastrologik with the query restaurant's uncleaned name, comment/delete line to get all possible queries
+            }
+            """
+            
+            try:
+                # print(query)
+                sparql.setQuery(query)
+                data_remote = sparql.queryAndConvert()["results"]["bindings"]
+            except Exception as e:
+                print(e)
+                data_remote = None
+
+        local_valid = data_local is not None and data_local is not [] and data_local
+        remote_valid = data_remote is not None and data_remote is not [] and data_remote
+
+        if local_valid or remote_valid:
+            return render(request, 'detail.html', {'resultLocal': data_local, 'resultRemote': data_remote, 'form': form,})
 
     return error404(request)
