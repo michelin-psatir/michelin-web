@@ -1,0 +1,30 @@
+PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  owl: <http://www.w3.org/2002/07/owl#>
+PREFIX  v: <http://www.example.org/vocab/>
+PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX  foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT ?nameURI ?name ?year ?latitude ?longitude ?city ?region ?zipCode ?cuisine ?price ?url ?stars WHERE {
+?nameURI a v:name;
+            rdfs:label ?name;
+            v:year ?year;
+            v:latitude ?latitude;
+            v:longitude ?longitude;
+            v:city ?cityURI;
+            v:cuisine ?cuisineURI;
+            v:url ?url;
+            v:stars ?stars;
+            v:searchableName ?searchableName.
+?cityURI rdfs:label ?city;
+        v:region ?regionURI.
+OPTIONAL {
+    ?nameURI v:zipCode ?zipCode.
+}
+OPTIONAL {
+    ?nameURI v:price ?price.
+}
+?cuisineURI rdfs:label ?cuisine.
+?regionURI rdfs:label ?region.
+
+FILTER ( strstarts(str(?nameURI),"http://www.example.org/vocab/108") )
+} ORDER BY ?name
