@@ -4,26 +4,50 @@ Lorem Ipsum
 
 ---
 
-### Setup Guide
+## Setup Guide
 
-**First Time**
-1. Clone the repository and create a new branch.
-2. Install Django. I will not go further, you've done this before.
-3. Install node.js. You can search it up yourself. Note to make sure the installation path is on `"C:\Program Files\nodejs\npm.cmd"`
-4. `python -m pip install django-tailwind`
-5. `python manage.py tailwind install`
-6. `pip install sparqlwrapper`
+### First Time Setup
+
+**Cloning Repository**
+1. Clone the repository
+2. Create a new branch for development `git checkout -b dev`
+3. Pull from remote by `git pull origin dev`
+    
+**Setting Up Dependencies**
+Option 1 - Untested but using `requirements.txt`
+1. `pip install -r requirements.txt`
+    
+Option 2 - Manual
+1. Install Django and Node.JS.
+2. `python -m pip install django-tailwind`
+3. `pip install sparqlwrapper`
+4. `python manage.py tailwind install`
+
+> Note to check on `michelinweb/settings.py` and make sure the directory for node.JS binary is listed according to your OS:    
+> Windows   : `r"C:\Program Files\nodejs\npm.cmd"`    
+> Linux     : `r"/usr/bin/npm"`    
+> _But note also, this depends on your node.JS installation directory_    
+
+**Setting Up Blazegraph Locally**
+1. Download the `jar` file for BlazeGraph and BigData
+2. Open a command window pointing to the directory
+3. Run the Blazegraph database locally using `java -server -Xmx4g -jar blazegraph.jar`
+4. Go towards namespace tab and add new namespace titled `michelin-final` with the default settings
+5. Select the newly created namespace by pressing `use` until the namespace used is the same as the namespace title on the top right
+6. Open the update tab and upload the corresponding `ttl` file
+7. Go back towards the namespace tab and click `Rebuild Full Text Index` and press `OK` on all dialogue
+8. Blazegraph should be done. Go back towards the command window and press `CTRL+C` to stop the database instance
+
 
 ---
 
 ### Running Guide
-On 2 separate windows pointing towards the project's directory
-1. `python manage.py tailwind start`
-2. `py manage.py runserver`
-3. [Optional] `java -server -Xmx4g -jar blazegraph.jar`
-
-> **Special Note:**    
-> Currently, there are 2 apps, `michelin` and `theme`. `theme` is the development, experimental, and testing zone. Use it to develop and try out feature. Once you're sure of a feature, move it to `michelin` and change `TAILWIND_APP_NAME` on `michelinweb/settings.py`, and then proceed to do `python manage.py tailwind install`. This will prepare the `michelin` tailwind app.
+On 2 separate windows pointing towards the project's directory:    
+Window A: `python manage.py tailwind start`    
+Window B: `py manage.py runserver`    
+    
+[Optional] Then, open another window pointing towards the Blazegraph directory and run the command tu initiate the database   
+Window Blazegraph: `java -server -Xmx4g -jar blazegraph.jar`
 
 ---
 
