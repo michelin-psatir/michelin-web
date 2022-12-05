@@ -1,6 +1,8 @@
 # michelin-web
 
-Lorem Ipsum
+This is a website to search Michelin Restaurant based on the dataset provided by [Kaggle](https://www.kaggle.com/datasets/jackywang529/michelin-restaurants) using SPARQL query, thus implementing a semantic-based search engine on an RDF graph.    
+    
+This project is part of a final project from the Semantic Web Course on Universitas Indonesia Faculty of Computer Science.
 
 ---
 
@@ -12,6 +14,9 @@ Lorem Ipsum
 1. Clone the repository
 2. Create a new branch for development `git checkout -b dev`
 3. Pull from remote by `git pull origin dev`
+
+**Special Note for Collaborators Regarding Git**
+It is **HIGHLY** recommended for you to create your own branch to do development. You can obtain the most updated content by pulling from the `dev` branch, and then once finished, push towards your branch and create a pull request towards the `dev` branch to avoid conflicts.
     
 **Setting Up Dependencies**
 Option 1 - Untested but using `requirements.txt`
