@@ -167,7 +167,7 @@ def fetch_details(request, id):
 
         name = data_local[0]['name']['value']
 
-        if name is not None and name and name is not '':
+        if name is not None and name and name != '':
             query = """
             PREFIX wd: <http://www.wikidata.org/entity/>
             PREFIX wds: <http://www.wikidata.org/entity/statement/>
