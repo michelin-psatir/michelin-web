@@ -15,10 +15,10 @@ This project is part of a final project from the Semantic Web Course on Universi
 2. Create a new branch for development `git checkout -b dev`
 3. Pull from remote by `git pull origin dev`
 
-**Special Note for Collaborators Regarding Git**
+**Special Note for Collaborators Regarding Git**    
 It is **HIGHLY** recommended for you to create your own branch to do development. You can obtain the most updated content by pulling from the `dev` branch, and then once finished, push towards your branch and create a pull request towards the `dev` branch to avoid conflicts.
     
-**Setting Up Dependencies**
+**Setting Up Dependencies**    
 Option 1 - Untested but using `requirements.txt`
 1. `pip install -r requirements.txt`
     
@@ -51,7 +51,7 @@ On 2 separate windows pointing towards the project's directory:
 Window A: `python manage.py tailwind start`    
 Window B: `py manage.py runserver`    
     
-[Optional] Then, open another window pointing towards the Blazegraph directory and run the command tu initiate the database   
+[Optional] Then, open another window pointing towards the Blazegraph directory and run the command to initiate the database   
 Window Blazegraph: `java -server -Xmx4g -jar blazegraph.jar`
 
 ---
