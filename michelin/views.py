@@ -222,7 +222,7 @@ def fetch_details(request, id):
             
             FILTER(REGEX(?restoLabel, """
             query += '"' + name + '"'
-            query += """)).   # replace Gastrologik with the query restaurant's uncleaned name, comment/delete line to get all possible queries
+            query += """)). 
             }
             """
             
