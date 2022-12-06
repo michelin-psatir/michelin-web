@@ -20,12 +20,22 @@
 				frm.reset();  // Reset all form data
 				return false; // Prevent page refresh
 			}
+
+		function toggleFunction() {
+			var x = document.getElementById("metadata");
+
+			if (x.style.display === "none") {
+				x.style.display = "block";
+			} else {
+				x.style.display = "none";
+			}
+		}
 	</script>
 
 	</head>
 
 	<body class="leading-normal tracking-normal font-sans">
-		<div class="md:container md:mx-auto p-8">
+		<div class="md:container md:mx-auto p-4 sm:p-8">
 
 			<div class="flex flex-row w-full content-between justify-between place-content-between items-center">
 				<button class="flex h-full bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow inline-flex items-center" onclick="history.back()">
@@ -58,17 +68,19 @@
             </div>
 
 			<div class="flex w-full flex-col sm:flex-row space-y-8 sm:space-x-12 sm:space-y-0">
-				<div class="flex flex-wrap sm:basis-3/4">
+				<div class="flex flex-wrap flex-col space-y-4 sm:basis-3/4">
+
 					<div class="flex flex-col">
 						<h1 class="text-4xl text-blue-700 font-bold">{{ resultLocal.0.name.value }}</h1>
 						<p>{{ resultLocal.0.city.value}} - {{ resultLocal.0.region.value }} </p>
 					</div>
-					{{ resultLocal }}
 				</div>
 
 				<div class="flex flex-wrap h-fit sm:basis-1/4 p-8 border-2 rounded-lg border-gray-200 transition hover:transition ease-in-out hover:-translate-y-2 hover:shadow-lg">
 					{% if resultRemote %}
-						{{ resultRemote }}
+						<div class="text-ellipsis overflow-hidden">
+							{{ resultRemote }}
+						</div>
 					{% else %}
 						<div class="flex flex-col w-full items-center content-center space-y-4">
 							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-gray-400 stroke-2 w-8 h-8">
@@ -78,6 +90,40 @@
 						</div>
 					{% endif %}
 				</div>
+			</div>
+
+			<div class="flex flex-col w-full p-4 mt-12 rounded-lg border-gray-200 border-2 place-self-end">
+
+				<div class="flex flex-col py-4 sm:py-0 sm:flex-row w-full sm:content-between sm:justify-between sm:place-content-between sm:items-center">
+					<div class="p-2">
+						<h1 class="text-2xl text-blue-600 font-bold">View Raw Metadata</h1> 
+						<p class="text-gray-400">Click View Metadata button to show this restaurant's metadata</p>
+					</div>
+	
+					<button class="flex h-fit bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow inline-flex items-center" onclick=toggleFunction()>
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 pr-2">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+							<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+						</svg>                                   
+						<span>View Metadata</span>
+					</button>            
+				</div>
+
+				<div style="display: none;" id="metadata" class="flex flex-col space-y-4 p-2">
+					<div class="flex flex-col">
+						<h5 class="font-medium text-gray-400">Local Data:</h5>
+						{{ resultLocal }}
+					</div>
+					<div class="flex flex-col">
+						<h5 class="font-medium text-gray-400">Remote Data:</h5>
+						{% if resultRemote %}
+							{{ resultRemote }}
+						{% else %}
+							<h3 class="text-lg text-gray-400 text-center font-medium italic">No remote information is available</h3>
+						{% endif %}
+					</div>
+				</div>
+				
 			</div>
 
 			
