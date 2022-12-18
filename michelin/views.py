@@ -234,6 +234,36 @@ def fetch_details(request, id):
                 print(e)
                 data_remote = None
 
+
+            # query = """
+            #     PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+            #     PREFIX  owl: <http://www.w3.org/2002/07/owl#> 
+            #     PREFIX  v: <http://www.example.org/vocab/> 
+            #     PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+            #     PREFIX  foaf: <http://xmlns.com/foaf/0.1/> 
+            #     PREFIX bds: <http://www.bigdata.com/rdf/search#>
+
+            #     SELECT DISTINCT (?res AS ?restaurantID) ?restaurantName ?stars ?city ?year WHERE {
+            #         ?restaurantName bds:search """
+            # query += '"*' + search + '*" .'
+            # query += """
+            #         ?res a v:name ;
+            #             rdfs:label ?restaurantName ;
+            #             v:stars ?stars ;
+            #             v:city [ rdfs:label ?city ] ;
+            #             v:year ?year .
+
+            #         }
+            # """
+            
+            # try:
+            #     # print(query)
+            #     sparql.setQuery(query)
+            #     dataNearby = sparql.queryAndConvert()["results"]["bindings"]
+            # except Exception as e:
+            #     print(e)
+            #     dataNearby = None
+
         local_valid = data_local is not None and data_local is not [] and data_local
         remote_valid = data_remote is not None and data_remote is not [] and data_remote
 
