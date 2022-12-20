@@ -37,6 +37,17 @@ def query(request):
     if (form.is_valid() and request.method == 'POST'):
         search = form.cleaned_data['search']
         if search != '':
+
+            searchTerm = '?restaurantName bds:search "*%s*" .' % search
+            
+            if search[0] == "?":
+                searchKey = search.split(" ")[0]
+                print(search.split(" ")[1:])
+                if searchKey[1:].lower() == "region":
+                    searchTerm = '?region bds:search "*%s*" .' % search.split(" ")[1:]
+                elif searchKey[1:].lower() == "city":
+                    searchTerm = '?city bds:search "*%s*" .' % search.split(" ")[1:]
+
             query = """
                 PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
                 PREFIX  owl: <http://www.w3.org/2002/07/owl#> 
@@ -45,16 +56,18 @@ def query(request):
                 PREFIX  foaf: <http://xmlns.com/foaf/0.1/> 
                 PREFIX bds: <http://www.bigdata.com/rdf/search#>
 
-                SELECT DISTINCT (?res AS ?restaurantID) ?restaurantName ?stars ?city ?year WHERE {
-                    ?restaurantName bds:search "*%s*" .
+                SELECT DISTINCT (?res AS ?restaurantID) ?restaurantName ?stars ?city ?region ?year WHERE {
+                    %s
                     ?res a v:name ;
                         rdfs:label ?restaurantName ;
                         v:stars ?stars ;
-                        v:city [ rdfs:label ?city ] ;
+                        v:city ?cityURI ;
                         v:year ?year .
 
+                    ?cityURI rdfs:label ?city;
+                        v:region [ rdfs:label ?region ].
                     }
-                """ % search
+                """ % searchTerm
             
             try:
                 # print(query)
@@ -82,9 +95,11 @@ def query(request):
                     ?res a v:name ;
                         rdfs:label ?restaurantName ;
                         v:stars ?stars ;
-                        v:city [ rdfs:label ?city ] ;
+                        v:city ?cityURI ;
                         v:year ?year .
 
+                    ?cityURI rdfs:label ?city;
+                        v:region [ rdfs:label ?region ].
                     }
                 """
             
@@ -125,7 +140,7 @@ def fetch_details(request, id):
                 PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
                 PREFIX  foaf: <http://xmlns.com/foaf/0.1/> 
 
-                SELECT ?nameURI ?name ?year ?latitude ?longitude ?city ?region ?zipCode ?cuisine ?price ?url ?stars ?regionURI WHERE {
+                SELECT ?nameURI ?name ?year ?latitude ?longitude ?city ?region ?zipCode ?cuisine ?price ?url ?stars ?regionURI ?cityURI WHERE {
                 ?nameURI a v:name;
                             rdfs:label ?name;
                             v:year ?year;
@@ -230,6 +245,7 @@ def fetch_details(request, id):
                 data_remote = None
 
         region = data_local[0]['regionURI']['value']
+        city = data_local[0]['cityURI']['value']
 
         query = """
             PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
@@ -255,16 +271,43 @@ def fetch_details(request, id):
         try:
             # print(query)
             sparql.setQuery(query)
-            data_nearby = sparql.queryAndConvert()["results"]["bindings"]
+            data_nearby_region = sparql.queryAndConvert()["results"]["bindings"]
         except Exception as e:
             print(e)
-            data_nearby = None
+            data_nearby_region = None
+
+        query = """
+            PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+            PREFIX  owl: <http://www.w3.org/2002/07/owl#> 
+            PREFIX  v: <http://www.example.org/vocab/> 
+            PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+            PREFIX  foaf: <http://xmlns.com/foaf/0.1/> 
+            PREFIX bds: <http://www.bigdata.com/rdf/search#>
+
+            SELECT DISTINCT (?res AS ?restaurantID) ?restaurantName ?stars ?city ?year WHERE {
+                ?res a v:name ;
+                    rdfs:label ?restaurantName ;
+                    v:stars ?stars ;
+                    v:city [ rdfs:label ?city ] ;
+                    v:year ?year ;
+                    v:city <%s> .
+
+                }
+            """ % city
+        
+        try:
+            # print(query)
+            sparql.setQuery(query)
+            data_nearby_city = sparql.queryAndConvert()["results"]["bindings"]
+        except Exception as e:
+            print(e)
+            data_nearby_city = None
 
         # print(data_nearby)
         local_valid = data_local is not None and data_local is not [] and data_local
         remote_valid = data_remote is not None and data_remote is not [] and data_remote
 
         if local_valid or remote_valid:
-            return render(request, 'detail.html', {'resultLocal': data_local, 'resultRemote': data_remote, 'resultNearby': data_nearby, 'form': form,})
+            return render(request, 'detail.html', {'resultLocal': data_local, 'resultRemote': data_remote, 'resultNearbyRegion': data_nearby_region, 'resultNearbyCity': data_nearby_city, 'form': form,})
 
     return error404(request)

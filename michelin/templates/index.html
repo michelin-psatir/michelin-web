@@ -110,7 +110,7 @@
                         
                         <div class="flex flex-col pt-4 space-y-0">
                             <h3 class="text-2xl font-bold">{{ res.restaurantName.value }}</h5>
-                            <p class="text-gray-400">{{ res.city.value }} - {{ res.year.value }}</p>
+                            <p class="text-gray-400">{{ res.city.value }}, {{ res.region.value }} - {{ res.year.value }}</p>
                         </div>
                     </div>
                 </div>
@@ -129,6 +129,9 @@
                                 City
                             </th>
                             <th scope="col" class="py-3 px-6">
+                                Region
+                            </th>
+                            <th scope="col" class="py-3 px-6">
                                 Michelin Stars
                             </th>
                             <th scope="col" class="py-3 px-6">
@@ -144,6 +147,9 @@
                             </th>
                             <td class="py-4 px-6 whitespace-nowrap">
                                 {{ res.city.value }}
+                            </td>
+                            <td class="py-4 px-6 whitespace-nowrap">
+                                {{ res.region.value }}
                             </td>
                             <td class="py-4 px-6 whitespace-nowrap flex flex-row">
                                 {% for i in "x"|rjust:res.stars.value %}
